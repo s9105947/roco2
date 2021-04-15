@@ -1,6 +1,6 @@
 **/
 !ariel/**
-!highlow/**
 !example/**
+!highlow/
 !CMakeLists.txt
 !.gitignore
