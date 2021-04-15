@@ -54,8 +54,6 @@ else()
     message(STATUS "X86Adapt wasn't found, DDCM not available.")
 endif()
 
-include(cmake/BuildFirestarter.cmake)
-
 target_include_directories(roco2 INTERFACE include)
 
 option(ROCO2_ASSERTIONS "enable additional checks with runtime overhead." OFF)
