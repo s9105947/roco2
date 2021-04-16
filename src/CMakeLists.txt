@@ -1,5 +1,4 @@
 add_library(roco2_core STATIC
-    asm_kernels.c
     metrics.cpp
     cpu.cpp
     fastcpufreq.c
