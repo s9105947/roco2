@@ -1,6 +1,17 @@
 # roco2
 A synthetic workload generator written in C++ with integrated [Score-P](http://www.vi-hps.org/projects/score-p) instrumentation.
 
+## Notes on this fork
+This is a fork to get a simple experiment running. Several parts of the original roco2 have been severed or disabled.
+
+Build with:
+
+```
+mkdir build && cd build
+SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --thread=omp' SCOREP_WRAPPER=off cmake .. -DCMAKE_C_COMPILER=scorep-gcc -DCMAKE_CXX_COMPILER=scorep-g++ -DUSE_SCOREP=ON -DBUILD_TESTING=OFF
+make SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --thread=omp'
+```
+
 ## Getting started
 
 The folder ```src/configurations/example``` contains one example configuration.
