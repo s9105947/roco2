@@ -66,8 +66,8 @@ macro(Roco2Configuration CONF )
 
     target_link_libraries(
         roco2_${CONF}
-        roco2_core
         roco2_main
+        roco2_core
     )
 
     install(TARGETS roco2_${CONF} RUNTIME DESTINATION bin)
