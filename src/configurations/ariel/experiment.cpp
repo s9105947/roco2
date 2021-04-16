@@ -71,12 +71,10 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
     roco2::task::task_plan plan;
 
-#pragma omp master
     {
         roco2::log::info() << "Experiment list has " << on_list.size() << " entries: " << on_list;
     }
 
-#pragma omp barrier
 
     auto experiment_startpoint =
         roco2::initialize::thread(starting_point, experiment_duration, eta_only);
@@ -118,7 +116,6 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
 // ------ EDIT TASK PLAN ABOVE THIS LINE ------
 
-#pragma omp master
     {
         roco2::log::info() << "ETA for whole execution: "
                            << std::chrono::duration_cast<std::chrono::seconds>(plan.eta());
@@ -126,7 +123,6 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
     if (!eta_only)
     {
-#pragma omp barrier
 
         plan.execute();
     }

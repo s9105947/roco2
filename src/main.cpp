@@ -70,8 +70,6 @@ int main(int argc, char** argv)
     // Therefore we have this boolean flag here.
     bool exception_happend = false;
 
-#pragma omp parallel default(shared) shared(starting_point, exception_happend)                     \
-    firstprivate(eta_only)
     {
         try
         {

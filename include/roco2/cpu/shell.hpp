@@ -24,7 +24,6 @@ namespace cpu
             {
                  call(initialize);
             }
-#pragma omp barrier
             roco2::metrics::shell::instance().write(-1);
         }
 
@@ -34,7 +33,6 @@ namespace cpu
             {
                  call(finalize);
             }
-#pragma omp barrier
             roco2::metrics::shell::instance().write(-1);
         }
 
@@ -50,8 +48,6 @@ namespace cpu
     private:
         void call(const std::string& cmd)
         {
-#pragma omp barrier
-#pragma omp master
             {
                 auto ret = std::system(cmd.c_str());
                 if (ret)
@@ -63,7 +59,6 @@ namespace cpu
                     log::info() << "shell command successful: " << cmd;
                 }
             }
-#pragma omp barrier
         }
 
     private:

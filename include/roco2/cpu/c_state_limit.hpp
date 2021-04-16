@@ -23,7 +23,6 @@ namespace cpu
     public:
         c_state_limit()
         {
-#pragma omp master
             {
                 int result = csl_init();
 
@@ -32,7 +31,6 @@ namespace cpu
                     raise("Couldn't initialize c_state_limits. Error: ", result);
                 }
             }
-#pragma omp barrier
 
             disable();
         }
@@ -41,8 +39,6 @@ namespace cpu
         {
             disable();
 
-#pragma omp barrier
-#pragma omp master
             {
                 int result = csl_fini();
 
@@ -51,7 +47,6 @@ namespace cpu
                     log::warn() << "Couldn't finalize c_state_limits";
                 }
             }
-#pragma omp barrier
         }
 
         c_state_limit(const c_state_limit&) = delete;
