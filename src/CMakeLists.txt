@@ -1,7 +1,6 @@
 add_library(roco2_core STATIC
     metrics.cpp
     cpu.cpp
-    fastcpufreq.c
     c_state_limit.c
 )
 target_link_libraries(roco2_core PUBLIC roco2)

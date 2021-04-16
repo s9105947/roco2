@@ -26,10 +26,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_POSIX_C_SOURCE -D_BSD_SOURCE -D_DEFAULT_S
 find_package(OpenMP REQUIRED)
 target_link_libraries(roco2 INTERFACE OpenMP::OpenMP_CXX)
 
-# this should also find MKL
-find_package(BLAS REQUIRED)
-target_link_libraries(roco2 INTERFACE BLAS::BLAS)
-
 find_package(Scorep)
 option(USE_SCOREP "Enable built-in Score-P user instrumentation during build." OFF)
 if(Scorep_FOUND AND USE_SCOREP)
@@ -42,9 +38,6 @@ endif()
 
 find_package(NUMA REQUIRED)
 target_link_libraries(roco2 INTERFACE NUMA::NUMA)
-
-find_package(CpuFreq REQUIRED)
-target_link_libraries(roco2 INTERFACE Cpufreq::Cpufreq)
 
 find_package(X86Adapt)
 if (X86Adapt_FOUND)
@@ -73,8 +66,6 @@ macro(Roco2Configuration CONF )
 
     target_link_libraries(
         roco2_${CONF}
-        # fastcpufreq
-        # ${FIRESTARTER_LIBRARIES}
         roco2_core
         roco2_main
     )

@@ -1,6 +1,5 @@
 #include <roco2/initialize.hpp>
 
-#include <roco2/cpu/frequency.hpp>
 #include <roco2/cpu/shell.hpp>
 #include <roco2/cpu/topology.hpp>
 
@@ -30,7 +29,6 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
     auto high_low_duration = std::chrono::milliseconds(100);
     roco2::kernels::high_low_bs high_low_kernel(high_low_duration, high_low_duration);
 
-    roco2::cpu::frequency freqctl;
     roco2::cpu::shell cstatectl("", "elab cstate enable", "elab cstate enable");
 
     roco2::memory::numa_bind_local nbl;
@@ -38,8 +36,6 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
     // ------ EDIT GENERIC SETTINGS BELOW THIS LINE ------
 
     auto experiment_duration = std::chrono::seconds(10);
-
-    auto freq_list = std::vector<unsigned>{ 2000, 1600, 1200, 2001 };
 
     auto on_list = sub_block_pattern(4, 32) >> block_pattern(4, false, triangle_shape::upper) >>
                    stride_pattern(4, 32) >> stride_pattern(4, 16) >> stride_pattern(2, 8) >>
@@ -56,7 +52,6 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
 #pragma omp master
     {
-        roco2::log::info() << "Number of frequencies: " << freq_list.size();
         roco2::log::info() << "Number of placements:  " << on_list.size() << on_list;
     }
 
@@ -79,14 +74,9 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
     {
         setting([&cstatectl, cstate_setting]() { cstatectl.change(cstate_setting); });
 
-        for (const auto& freq : freq_list)
+        for (const auto& on : on_list)
         {
-            setting([&freqctl, freq]() { freqctl.change(freq); });
-
-            for (const auto& on : on_list)
-            {
-                experiment(high_low_kernel, on);
-            }
+            experiment(high_low_kernel, on);
         }
     }
 
