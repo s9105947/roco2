@@ -37,9 +37,7 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
     auto experiment_duration = std::chrono::seconds(10);
 
-    auto on_list = sub_block_pattern(4, 32) >> block_pattern(4, false, triangle_shape::upper) >>
-                   stride_pattern(4, 32) >> stride_pattern(4, 16) >> stride_pattern(2, 8) >>
-                   stride_pattern(2, 4);
+    auto on_list = block_on_all();
 
     auto cstate_list =
         std::vector<roco2::cpu::shell::setting_type>{ { 0, "elab cstate enable --only POLL" },
