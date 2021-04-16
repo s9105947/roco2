@@ -81,6 +81,8 @@ namespace cpu
 
             disable();
 
+#pragma omp barrier
+#pragma omp master
             {
                 x86_adapt_finalize();
             }
@@ -132,6 +134,7 @@ namespace cpu
 
             roco2::metrics::ddcm::instance().write(new_ddcm_value * 6.25);
 #else
+#pragma omp master
             {
                 log::warn() << "DDCM change to " << new_ddcm_value
                             << " requested, but roco2 was built without X86Adapt.";

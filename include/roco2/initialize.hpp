@@ -51,9 +51,11 @@ public:
     {
         // SCOREP_USER_REGION("thread_init", SCOREP_USER_REGION_TYPE_FUNCTION)
 
+#pragma omp barrier
 
         bool is_master = false;
 
+#pragma omp master
         {
             is_master = true;
         }
@@ -84,6 +86,7 @@ public:
 
         auto then = start_point + experiment_duration;
 
+#pragma omp barrier
 
         auto now = roco2::chrono::now();
 

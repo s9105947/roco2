@@ -36,6 +36,7 @@ namespace task
         {
             for (auto& task : tasks_)
             {
+#pragma omp master
                 {
                     log::info() << "ETA: "
                                 << std::chrono::duration_cast<std::chrono::seconds>(eta_);
