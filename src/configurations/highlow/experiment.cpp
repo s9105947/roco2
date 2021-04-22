@@ -22,20 +22,24 @@
 #include <chrono>
 
 using namespace roco2::experiments::patterns;
+using namespace std::chrono_literals;
 
 void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 {
-    // half (!) period length
-    auto high_low_duration = std::chrono::milliseconds(100);
-    roco2::kernels::high_low_bs high_low_kernel(high_low_duration, high_low_duration);
+    std::vector<roco2::kernels::high_low_bs> kernels = {
+        roco2::kernels::high_low_bs(5s, 5s),
+        roco2::kernels::high_low_bs(1s, 1s),
+        roco2::kernels::high_low_bs(500ms, 500ms),
+        roco2::kernels::high_low_bs(100ms, 100ms),
+    };
 
     roco2::memory::numa_bind_local nbl;
 
     // ------ EDIT GENERIC SETTINGS BELOW THIS LINE ------
 
-    auto experiment_duration = std::chrono::seconds(1);
+    auto experiment_duration = std::chrono::seconds(60);
 
-    auto on_list = block_pattern(4);
+    auto on_list = block_pattern(176) >> block_pattern(88) >> block_pattern(44);
 
     // ------ EDIT GENERIC SETTINGS ABOVE THIS LINE ------
 
@@ -60,7 +64,10 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
     // ------ EDIT TASK PLAN BELOW THIS LINE ------
 
     for (const auto& on : on_list) {
-        experiment(high_low_kernel, on);
+        // note: const kernels are not accepted by compiler
+        for (auto& k : kernels) {
+            experiment(k, on);
+        }
     }
 
     // ------ EDIT TASK PLAN ABOVE THIS LINE ------
