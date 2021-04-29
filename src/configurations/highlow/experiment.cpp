@@ -28,18 +28,26 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 {
     std::vector<roco2::kernels::high_low_bs> kernels = {
         roco2::kernels::high_low_bs(5s, 5s),
-        roco2::kernels::high_low_bs(1s, 1s),
-        roco2::kernels::high_low_bs(500ms, 500ms),
-        roco2::kernels::high_low_bs(100ms, 100ms),
+//        roco2::kernels::high_low_bs(1s, 1s),
+//        roco2::kernels::high_low_bs(500ms, 500ms),
+//        roco2::kernels::high_low_bs(100ms, 100ms),
+        roco2::kernels::high_low_bs(21ms, 21ms),
+//        roco2::kernels::high_low_bs(20ms, 20ms),
+//        roco2::kernels::high_low_bs(260us, 260us);
+//        roco2::kernels::high_low_bs(250us, 250us);
+//        roco2::kernels::high_low_bs(130us, 130us);
+//        roco2::kernels::high_low_bs(125us, 125us);
     };
 
     roco2::memory::numa_bind_local nbl;
 
     // ------ EDIT GENERIC SETTINGS BELOW THIS LINE ------
 
-    auto experiment_duration = std::chrono::seconds(60);
+    //auto experiment_duration = std::chrono::seconds(60);
+    auto experiment_duration = std::chrono::seconds(20);
 
-    auto on_list = block_pattern(176) >> block_pattern(88) >> block_pattern(44);
+    //auto on_list = block_pattern(176) >> block_pattern(88);
+    auto on_list = block_pattern(176);
 
     // ------ EDIT GENERIC SETTINGS ABOVE THIS LINE ------
 
