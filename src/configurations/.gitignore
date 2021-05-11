@@ -3,5 +3,6 @@
 !example/**
 !highlow/
 !highlow*hz/
+!highlow_slow/
 !CMakeLists.txt
 !.gitignore
