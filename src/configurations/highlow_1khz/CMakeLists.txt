@@ -1,0 +1,3 @@
+Roco2Configuration(highlow_1khz)
+
+target_compile_features(roco2_highlow_1khz PRIVATE cxx_std_14)
