@@ -26,6 +26,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_POSIX_C_SOURCE -D_BSD_SOURCE -D_DEFAULT_S
 find_package(OpenMP REQUIRED)
 target_link_libraries(roco2 INTERFACE OpenMP::OpenMP_CXX)
 
+find_package(BLAS REQUIRED)
+target_link_libraries(roco2 INTERFACE ${BLAS_LIBRARIES})
+
 find_package(Scorep)
 option(USE_SCOREP "Enable built-in Score-P user instrumentation during build." OFF)
 if(Scorep_FOUND AND USE_SCOREP)

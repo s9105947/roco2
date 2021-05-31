@@ -22,8 +22,7 @@ namespace detail
         thread_local_memory()
         : vec_A(vec_size), vec_B(vec_size), vec_C(vec_size), vec_F(vec_size),
           mat_A(mat_size * mat_size), mat_B(mat_size * mat_size),
-          mat_C(mat_size * mat_size), mem_buffer(mem_size),
-          firestarter_buffer(firestarter_size)
+          mat_C(mat_size * mat_size), mem_buffer(mem_size)
         {
             for (std::size_t i = 0; i < vec_A.size(); ++i)
             {
@@ -45,11 +44,11 @@ namespace detail
                 mem_buffer[i] = i * 23 + 42;
             }
 
-            for (std::size_t i = 0; i < firestarter_buffer.size(); ++i)
-            {
-                firestarter_buffer[i] =
-                    0.25 + static_cast<double>(i % 9267) * 0.24738995982e-4;
-            }
+            //for (std::size_t i = 0; i < firestarter_buffer.size(); ++i)
+            //{
+            //    firestarter_buffer[i] =
+            //        0.25 + static_cast<double>(i % 9267) * 0.24738995982e-4;
+            //}
 
             log::debug() << "Memory allocated and touched.";
         }
@@ -64,7 +63,7 @@ namespace detail
         std::vector<double> mat_C;
 
         std::vector<std::uint64_t> mem_buffer;
-        std::vector<double, AlignmentAllocator<double, 32>> firestarter_buffer;
+        //std::vector<double, AlignmentAllocator<double, 32>> firestarter_buffer;
 
         const static std::size_t vec_size = 1024;
         const static std::size_t mat_size = 512;
@@ -74,8 +73,8 @@ namespace detail
             64 * 1024 * 1024 / sizeof(mem_buffer[0]);
 
         // size of mem_buffer equals 160MB
-        const static std::size_t firestarter_size =
-            512 * 1024 * 1024 / sizeof(firestarter_buffer[0]);
+        //const static std::size_t firestarter_size =
+        //    512 * 1024 * 1024 / sizeof(firestarter_buffer[0]);
     };
 }
 

@@ -1,6 +1,7 @@
 **/
 !ariel/**
 !example/**
+!metricq/
 !highlow/
 !highlow*hz/
 !highlow_slow/
