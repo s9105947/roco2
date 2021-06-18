@@ -21,38 +21,36 @@
 #include <vector>
 #include <chrono>
 #include <ratio>
+#include <iostream>
 
 using namespace roco2::experiments::patterns;
 using namespace std::chrono_literals;
 
 void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 {
-    std::vector<roco2::kernels::high_low_bs> kernels = {
-        roco2::kernels::high_low_bs(5s, 5s),
-        roco2::kernels::high_low_bs(1s, 1s),
-        roco2::kernels::high_low_bs(500ms, 500ms),
-        roco2::kernels::high_low_bs(80ms, 80ms),
-        roco2::kernels::high_low_bs(41ms, 41ms),
-        roco2::kernels::high_low_bs(40ms, 40ms),
-        roco2::kernels::high_low_bs(21ms, 21ms),
-        roco2::kernels::high_low_bs(20ms, 20ms),
-//        roco2::kernels::high_low_bs(1010us, 1010us),
-//        roco2::kernels::high_low_bs(1000us, 1000us),
-//        roco2::kernels::high_low_bs(510us, 510us),
-//        roco2::kernels::high_low_bs(500us, 500us),
-//        roco2::kernels::high_low_bs(260us, 260us),
-//        roco2::kernels::high_low_bs(250941ns, 250941ns),
-//        roco2::kernels::high_low_bs(250us, 250us),
-//        roco2::kernels::high_low_bs(249066ns, 249066ns),
-//        roco2::kernels::high_low_bs(130us, 130us),
-//        roco2::kernels::high_low_bs(125us, 125us),
-    };
+    std::vector<roco2::kernels::high_low_bs> kernels;
 
-    roco2::memory::numa_bind_local nbl;
+    for (double freq_hz = 495; freq_hz <= 505; freq_hz += 1) {
+        std::chrono::duration<double> period_length = std::chrono::seconds(1) / freq_hz;
+        kernels.push_back(roco2::kernels::high_low_bs(period_length / 2, period_length / 2));
+    }
+
+#pragma omp master
+    {
+        std::cerr << "F (Hz)\tT (µs)\tT/2 (µs)" << std::endl;
+
+        for (const auto& k : kernels) {
+            using us = std::chrono::duration<double, std::micro>;
+            double freq_hz = std::chrono::duration<double>(1) / k.get_period();
+            std::cerr << freq_hz << "\t" << us(k.get_period()).count() << "\t" << us(k.get_high_time()).count() << std::endl;
+        }
+    }
+
+    roco2::memory::numa_bind_local nbl; 
 
     // ------ EDIT GENERIC SETTINGS BELOW THIS LINE ------
 
-    auto experiment_duration = std::chrono::seconds(10);
+    auto experiment_duration = std::chrono::seconds(30);
 
     //auto on_list = block_pattern(176) >> block_pattern(88);
     auto on_list = block_pattern(176);

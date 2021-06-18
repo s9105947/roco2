@@ -1,1 +1,8 @@
 add_subdirectory(highlow)
+add_subdirectory(highlow_1khz)
+add_subdirectory(highlow_2khz)
+add_subdirectory(highlow_500hz)
+add_subdirectory(highlow_1900hz)
+add_subdirectory(highlow_2100hz)
+add_subdirectory(highlow_slow)
+add_subdirectory(metricq)

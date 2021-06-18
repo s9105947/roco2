@@ -1,9 +1,12 @@
 #ifndef INCLUDE_ROCO2_KERNELS_HIGH_LOW_HPP
 #define INCLUDE_ROCO2_KERNELS_HIGH_LOW_HPP
 
+#include <chrono>
+
 #include <roco2/chrono/util.hpp>
 #include <roco2/kernels/base_kernel.hpp>
 #include <roco2/metrics/utility.hpp>
+#include <roco2/metrics/frequency.hpp>
 #include <roco2/scorep.hpp>
 
 namespace roco2
@@ -25,6 +28,18 @@ namespace kernels
             return 12;
         }
 
+        roco2::chrono::time_point::duration get_high_time() const {
+            return high_time_;
+        }
+
+        roco2::chrono::time_point::duration get_low_time() const {
+            return low_time_;
+        }
+
+        roco2::chrono::time_point::duration get_period() const {
+            return low_time_ + high_time_;
+        }
+
     private:
         void run_kernel(roco2::chrono::time_point tp) override
         {
@@ -32,6 +47,9 @@ namespace kernels
             SCOREP_USER_REGION("high_low_bs_kernel", SCOREP_USER_REGION_TYPE_FUNCTION)
 #endif
             roco2::chrono::time_point deadline = std::chrono::high_resolution_clock::now();
+            deadline -= deadline.time_since_epoch() % get_period();
+
+            roco2::metrics::frequency::instance().write(std::chrono::seconds(1) / std::chrono::duration_cast<std::chrono::duration<double>>(get_period()));
 
             std::size_t loops = 0;
 
