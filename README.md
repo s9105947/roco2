@@ -8,8 +8,8 @@ Build with:
 
 ```
 mkdir build && cd build
-SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --thread=omp --nocompiler' SCOREP_WRAPPER=off cmake .. -DCMAKE_C_COMPILER=scorep-gcc -DCMAKE_CXX_COMPILER=scorep-g++ -DUSE_SCOREP=ON -DBUILD_TESTING=OFF
-make SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --thread=omp --nocompiler'
+SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --openmp --thread=omp --nocompiler' SCOREP_WRAPPER=off cmake .. -DCMAKE_C_COMPILER=scorep-gcc -DCMAKE_CXX_COMPILER=scorep-g++ -DUSE_SCOREP=ON -DBUILD_TESTING=OFF
+make SCOREP_WRAPPER_INSTRUMENTER_FLAGS='--user --openmp --thread=omp --nocompiler'
 ```
 
 ## Getting started
