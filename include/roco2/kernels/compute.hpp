@@ -41,7 +41,6 @@ namespace kernels
 #ifdef HAS_SCOREP
             SCOREP_USER_REGION("compute_kernel", SCOREP_USER_REGION_TYPE_FUNCTION)
 #endif
-
             auto& vec_A = roco2::thread_local_memory().vec_A;
             auto& vec_B = roco2::thread_local_memory().vec_B;
             auto& vec_C = roco2::thread_local_memory().vec_C;

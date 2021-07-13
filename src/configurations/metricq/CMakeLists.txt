@@ -19,3 +19,6 @@ roco2_metricq_exp(compute)
 roco2_metricq_exp(mem_read)
 roco2_metricq_exp(mem_write)
 roco2_metricq_exp(mem_copy)
+
+Roco2Configuration(metricq)
+target_compile_features(roco2_metricq PRIVATE cxx_std_14)

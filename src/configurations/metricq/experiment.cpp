@@ -33,9 +33,20 @@
 using namespace roco2::experiments::patterns;
 namespace kernels = roco2::kernels;
 
-void run_p9_triangle(roco2::chrono::time_point starting_point, bool eta_only, std::shared_ptr<kernels::base_kernel> k)
+// runs all suitable kernels
+void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 {
-    auto experiment_duration = std::chrono::seconds(1);
+    std::vector<std::shared_ptr<kernels::base_kernel>> kernel_list = {
+        std::make_shared<kernels::busy_wait>(),
+        std::make_shared<kernels::memory_copy<>>(),
+        std::make_shared<kernels::compute>(),
+        std::make_shared<kernels::memory_write<>>(),
+        std::make_shared<kernels::sinus>(),
+        std::make_shared<kernels::matmul>(),
+        std::make_shared<kernels::memory_read<>>(),
+    };
+    auto experiment_duration = std::chrono::seconds(60);
+    //auto experiment_duration = std::chrono::seconds(2);
     auto on_list = block_pattern(4, false, triangle_shape::upper);
     roco2::task::task_plan plan;
 
@@ -53,8 +64,10 @@ void run_p9_triangle(roco2::chrono::time_point starting_point, bool eta_only, st
     };
 
     // actual task plan
-    for (const auto& on : on_list) {
-        experiment(*k, on);
+    for (auto& k : kernel_list) {
+        for (const auto& on : on_list) {
+            experiment(*k, on);
+        }
     }
 
 #pragma omp master
