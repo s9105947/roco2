@@ -9,6 +9,10 @@
 #include <roco2/metrics/utility.hpp>
 #include <roco2/scorep.hpp>
 
+#ifdef HAS_PPC64LE_ASM_KERNELS
+#include <roco2/kernels/ppc64le_asm_kernels.h>
+#endif // HAS_PPC64LE_ASM_KERNELS
+
 namespace roco2
 {
 namespace kernels
@@ -74,7 +78,17 @@ namespace kernels
             case workload_t::stdlib_sleep:
                 std::this_thread::sleep_until(deadline);
                 break;
+
+#ifdef HAS_PPC64LE_ASM_KERNELS
+
+            case workload_t::ppc64le_linux_hmt_verylow:
+                while(std::chrono::high_resolution_clock::now() < deadline) {
+                    ppc64_linux_hmt_verylow(1 << 10);
+                }
+                break;
                 
+#endif // HAS_PPC64LE_ASM_KERNELS
+
             default:
                 throw std::logic_error("unknown workload: " + std::to_string(static_cast<uint64_t>(workload_to_run)));
             }

@@ -38,6 +38,10 @@ if (USE_SCOREP)
     endif()
 endif()
 
+if (USE_PPC64LE_ASM_KERNELS)
+    target_compile_definitions(roco2_core PUBLIC "HAS_PPC64LE_ASM_KERNELS")
+endif()
+
 add_library(roco2_main STATIC main.cpp)
 target_link_libraries(roco2_main PUBLIC roco2)
 
