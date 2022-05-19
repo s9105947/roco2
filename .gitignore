@@ -1,2 +1,5 @@
 build*
 python
+
+# backup files
+*~
