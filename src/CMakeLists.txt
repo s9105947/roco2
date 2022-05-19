@@ -13,6 +13,13 @@ else()
     message(STATUS "Building WITHOUT asm kernels.")
 endif()
 
+if (USE_PPC64LE_ASM_KERNELS)
+    message(STATUS "Building WITH ppc64le asm kernels.")
+    list(APPEND roco2_core_SOURCES ppc64le_asm_kernels.c)
+else()
+    message(STATUS "Building WITHOUT ppc64le asm kernels.")
+endif()
+
 if (USE_FIRESTARTER)
     list(APPEND roco2_core_SOURCES firestarter_kernel.cpp)
 endif()
