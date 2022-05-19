@@ -14,6 +14,7 @@ SCOREP_USER_METRIC_GLOBAL(ddcm_metric)
 SCOREP_USER_METRIC_GLOBAL(c_state_limit_metric)
 SCOREP_USER_METRIC_GLOBAL(utility_metric)
 SCOREP_USER_METRIC_GLOBAL(shell_metric)
+SCOREP_USER_METRIC_GLOBAL(cmd_metric)
 #endif
 
 #include <roco2/metrics/ddcm.hpp>
@@ -23,6 +24,7 @@ SCOREP_USER_METRIC_GLOBAL(shell_metric)
 #include <roco2/metrics/shell.hpp>
 #include <roco2/metrics/threads.hpp>
 #include <roco2/metrics/utility.hpp>
+#include <roco2/metrics/cmd.hpp>
 
 namespace roco2
 {
@@ -81,6 +83,15 @@ namespace metrics
         SCOREP_USER_METRIC_UINT64(shell_metric, value)
 #endif
         meta::instance().shell = value;
+    }
+
+    void __attribute__((optimize("O0"))) cmd::write(std::uint64_t value)
+    {
+#ifdef HAS_SCOREP
+        SCOREP_USER_METRIC_UINT64(cmd_metric, value)
+#endif
+
+        (void)value;
     }
 
     void __attribute__((optimize("O0")))
