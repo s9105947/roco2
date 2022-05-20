@@ -40,6 +40,10 @@ endif()
 
 if (USE_PPC64LE_ASM_KERNELS)
     target_compile_definitions(roco2_core PUBLIC "HAS_PPC64LE_ASM_KERNELS")
+
+    # run ppc64le kernels and print execution times per command
+    add_executable(ppc64le_asm_kernels_example ppc64le_asm_kernels_example.cpp)
+    target_link_libraries(ppc64le_asm_kernels_example PUBLIC roco2_core roco2)
 endif()
 
 add_library(roco2_main STATIC main.cpp)

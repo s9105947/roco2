@@ -10,5 +10,14 @@
 #endif
 
 EXTERN_C uint64_t ppc64_linux_hmt_verylow(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_linux_hmt_medium(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_nop(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_exse(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_dfp_add(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_dfp_add_and_exse(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_xsdivqp(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_xsdivqp_and_exse(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_dfp_div_quad(const uint64_t passes_desired);
+EXTERN_C uint64_t ppc64_dfp_div_quad_and_exse(const uint64_t passes_desired);
 
 #endif // INCLUDE_ROCO2_KERNELS_PPC64_ASM_KERNELS_H
