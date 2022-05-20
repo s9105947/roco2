@@ -7,6 +7,7 @@
 #include <roco2/chrono/util.hpp>
 #include <roco2/kernels/base_kernel.hpp>
 #include <roco2/metrics/utility.hpp>
+#include <roco2/metrics/cmd.hpp>
 #include <roco2/scorep.hpp>
 
 #ifdef HAS_PPC64LE_ASM_KERNELS
@@ -24,9 +25,31 @@ namespace kernels
      * Note: use scoped enum to avoid cluttering namespace.
      */
     enum class workload_t : uint64_t {
+        // typical operations
         stdlib_sleep = 1 << 0,
         roco2_busy_wait = 1 << 1,
+
+        // copied from ppc64le linux kernel
+        // note: only go to medium, anything above is privileged by default
         ppc64le_linux_hmt_verylow = 1 << 2,
+        ppc64le_linux_hmt_medium = 1 << 3,
+
+        // nop as specified by Power ISA manual
+        ppc64le_nop = 1 << 4,
+        ppc64le_exse = 1 << 5,
+
+        // high latency-busy cycles ratio
+        ppc64le_dfp_add = 1 << 6,
+        ppc64le_dfp_add_and_exse = 1 << 7,
+
+        // high latency
+        ppc64le_xsdivqp = 1 << 8,
+        ppc64le_xsdivqp_and_exse = 1 << 9,
+        ppc64le_dfp_div_quad = 1 << 10,
+        ppc64le_dfp_div_quad_and_exse = 1 << 11,
+
+        // last item to help with iteration
+        max
     };
     
     class high_low_bs : public base_kernel
@@ -81,12 +104,25 @@ namespace kernels
 
 #ifdef HAS_PPC64LE_ASM_KERNELS
 
-            case workload_t::ppc64le_linux_hmt_verylow:
-                while(std::chrono::high_resolution_clock::now() < deadline) {
-                    ppc64_linux_hmt_verylow(1 << 10);
-                }
-                break;
-                
+                // use macro to avoid boilerplate
+#define RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(id)                       \
+                case workload_t::ppc64le_ ## id:                        \
+                    while(std::chrono::high_resolution_clock::now() < deadline) { \
+                        ppc64le_ ## id (1 << 10);                       \
+                    }                                                   \
+                    break;
+
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(linux_hmt_verylow)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(linux_hmt_medium)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(nop)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(exse)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(dfp_add)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(dfp_add_and_exse)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(xsdivqp)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(xsdivqp_and_exse)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(dfp_div_quad)
+                RUN_PPC64LE_ASM_KERNEL_UNTIL_DEADLINE(dfp_div_quad_and_exse)
+
 #endif // HAS_PPC64LE_ASM_KERNELS
 
             default:
@@ -105,6 +141,10 @@ namespace kernels
 
             // record frequency of highlow pattern to trace
             roco2::metrics::utility::instance().write(std::chrono::seconds(1) / std::chrono::duration_cast<std::chrono::duration<double>>(period()));
+
+            // encode both commands for high & low phase to trace
+            // both are bitmask -> combine them
+            roco2::metrics::cmd::instance().write(static_cast<uint64_t>(high_workload) | static_cast<uint64_t>(low_workload));
 
             std::size_t loops = 0;
 
