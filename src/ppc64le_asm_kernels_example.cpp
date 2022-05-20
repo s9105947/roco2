@@ -18,16 +18,16 @@ void minibench(const char* name, uint64_t (*benchmarked)(uint64_t)) {
 }
 
 int main() {
-    minibench("linux hmt verlow", &ppc64_linux_hmt_verylow);
-    minibench("linux hmt medium", &ppc64_linux_hmt_medium);
-    minibench("nop", &ppc64_nop);
-    minibench("exse", &ppc64_exse);
-    minibench("dfp add", &ppc64_dfp_add);
-    minibench("dfp add and exse", &ppc64_dfp_add_and_exse);
-    minibench("dfp div quad", &ppc64_dfp_div_quad);
-    minibench("dfp div quad and exse", &ppc64_dfp_div_quad_and_exse);
-    minibench("xsdivqp", &ppc64_xsdivqp);
-    minibench("xsdivqp and exse", &ppc64_xsdivqp_and_exse);
+    minibench("linux hmt verlow", &ppc64le_linux_hmt_verylow);
+    minibench("linux hmt medium", &ppc64le_linux_hmt_medium);
+    minibench("nop", &ppc64le_nop);
+    minibench("exse", &ppc64le_exse);
+    minibench("dfp add", &ppc64le_dfp_add);
+    minibench("dfp add and exse", &ppc64le_dfp_add_and_exse);
+    minibench("dfp div quad", &ppc64le_dfp_div_quad);
+    minibench("dfp div quad and exse", &ppc64le_dfp_div_quad_and_exse);
+    minibench("xsdivqp", &ppc64le_xsdivqp);
+    minibench("xsdivqp and exse", &ppc64le_xsdivqp_and_exse);
     return 0;
 }
 
