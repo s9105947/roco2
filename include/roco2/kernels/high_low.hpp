@@ -48,6 +48,9 @@ namespace kernels
         ppc64le_dfp_div_quad = 1 << 10,
         ppc64le_dfp_div_quad_and_exse = 1 << 11,
 
+        // native compute
+        roco2_compute = 1 << 12,
+
         // last item to help with iteration
         max
     };
@@ -91,6 +94,47 @@ namespace kernels
         const workload_t low_workload;
 
     private:
+        /// copied from compute kernel
+        template <typename Container>
+        void compute_kernel(Container& A, Container& B, Container& C, std::size_t repeat)
+        {
+            double m = C[0];
+            const auto size = thread_local_memory().vec_size;
+
+            for (std::size_t i = 0; i < repeat; i++)
+            {
+                for (uint64_t i = 0; i < size; i++)
+                {
+                    m += B[i] * A[i];
+                }
+                C[0] = m;
+            }
+        }
+
+        void run_compute_until(roco2::chrono::time_point deadline) {
+            // already initialized, this is no allocation
+            auto& vec_A = roco2::thread_local_memory().vec_A;
+            auto& vec_B = roco2::thread_local_memory().vec_B;
+            auto& vec_C = roco2::thread_local_memory().vec_C;
+
+            std::size_t loops = 0;
+
+            while (std::chrono::high_resolution_clock::now() <= deadline)
+            {
+                if (vec_C[0] == 123.12345)
+                    vec_A[0] += 1.0;
+
+                compute_kernel(vec_A, vec_B, vec_C, 32);
+
+                loops++;
+            }
+
+            // just as a data dependency
+            volatile int dd = 0;
+            if (vec_C[0] == 42.0)
+                dd++;
+        }
+
         /// run given workload until deadline
         void run_workload_until(roco2::chrono::time_point deadline, const workload_t workload_to_run) {
             switch(workload_to_run) {
@@ -100,6 +144,10 @@ namespace kernels
 
             case workload_t::stdlib_sleep:
                 std::this_thread::sleep_until(deadline);
+                break;
+
+            case workload_t::roco2_compute:
+                run_compute_until(deadline);
                 break;
 
 #ifdef HAS_PPC64LE_ASM_KERNELS
