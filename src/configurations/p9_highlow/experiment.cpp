@@ -83,29 +83,16 @@ void run_experiments(roco2::chrono::time_point starting_point, bool eta_only)
 
     // iterate over all high-low workload combinations
     using roco2::kernels::workload_t;
-    for (uint64_t high_workload_num = 1;
-         high_workload_num < static_cast<uint64_t>(workload_t::max);
-         high_workload_num <<= 1) {
-        for (uint64_t low_workload_num = 1;
-             low_workload_num < static_cast<uint64_t>(workload_t::max);
-             low_workload_num <<= 1) {
-            // deduplicate combinations
-            if (!(high_workload_num > low_workload_num)) {
-                continue;
-            }
+    workload_t high_workload = workload_t::roco2_compute;
+    workload_t low_workload = workload_t::ppc64le_linux_hmt_medium;
 
-            workload_t high_workload = static_cast<workload_t>(high_workload_num);
-            workload_t low_workload = static_cast<workload_t>(low_workload_num);
-
-            // schedule workload for all frequencies
-            for (double freq_hz : get_frequencies(P9_HIGHLOW_FREQS)) {
-                std::chrono::duration<double> period_length = std::chrono::seconds(1) / freq_hz;
-                kernels.push_back(roco2::kernels::high_low_bs(period_length / 2,
-                                                              period_length / 2,
-                                                              high_workload,
-                                                              low_workload));
-            }
-        }
+    // schedule workload for all frequencies
+    for (double freq_hz : get_frequencies(P9_HIGHLOW_FREQS)) {
+        std::chrono::duration<double> period_length = std::chrono::seconds(1) / freq_hz;
+        kernels.push_back(roco2::kernels::high_low_bs(period_length / 2,
+                                                        period_length / 2,
+                                                        high_workload,
+                                                        low_workload));
     }
 
     roco2::memory::numa_bind_local nbl; 
